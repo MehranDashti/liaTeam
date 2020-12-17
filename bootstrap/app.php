@@ -30,6 +30,9 @@ $app->withFacades();
 $app->withEloquent();
 
 $app->configure('auth');
+$app->configure('permission');
+$app->alias('cache', \Illuminate\Cache\CacheManager::class);  // if you don't have this already
+$app->register(Spatie\Permission\PermissionServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -75,17 +78,11 @@ $app->configure('app');
 | route or middleware that'll be assigned to some specific routes.
 |
 */
-
-// $app->middleware([
-//     App\Http\Middleware\ExampleMiddleware::class
-// ]);
-
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
     'client' => CheckClientCredentials::class,
+    'permission' => Spatie\Permission\Middlewares\PermissionMiddleware::class,
+    'role'       => Spatie\Permission\Middlewares\RoleMiddleware::class,
 ]);
 
 /*
@@ -100,7 +97,7 @@ $app->routeMiddleware([
 */
 
 // $app->register(App\Providers\AppServiceProvider::class);
-// $app->register(App\Providers\AuthServiceProvider::class);
+ $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Laravel\Passport\PassportServiceProvider::class);
 $app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
