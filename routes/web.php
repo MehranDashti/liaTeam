@@ -1,6 +1,8 @@
 <?php
 
-/** @var \Laravel\Lumen\Routing\Router $router */
+use Laravel\Lumen\Routing\Router;
+
+/** @var Router $router */
 
 /*
 |--------------------------------------------------------------------------
@@ -16,3 +18,13 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
+$router->post('v1/login', 'v1\AuthController@login');
+$router->get('v1/logout', 'v1\HomeController@logout');
+
+/** User Controller Routes */
+$router->get('v1/users/', 'v1\UserController@index');
+$router->post('v1/users/create', 'v1\UserController@create');
+$router->get('v1/users/show/{id}', 'v1\UserController@show');
+$router->put('v1/users/update', 'v1\UserController@update');
+$router->delete('v1/users/delete/{id}', 'v1\UserController@delete');
