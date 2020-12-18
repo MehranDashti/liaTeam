@@ -94,6 +94,7 @@ class UserController extends Controller
      * @param $id
      * @param UserBuilder $userBuilder
      * @return JsonResponse
+     * @throws Exception
      */
     public function delete($id, UserBuilder $userBuilder): JsonResponse
     {
