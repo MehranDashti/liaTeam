@@ -1,6 +1,6 @@
 <?php
 
-use Laravel\Passport\Http\Middleware\CheckClientCredentials;
+use Illuminate\Cache\CacheManager;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
@@ -30,8 +30,11 @@ $app->withFacades();
 $app->withEloquent();
 
 $app->configure('auth');
+
 $app->configure('permission');
-$app->alias('cache', \Illuminate\Cache\CacheManager::class);  // if you don't have this already
+
+$app->alias('cache', CacheManager::class);
+
 $app->register(Spatie\Permission\PermissionServiceProvider::class);
 
 /*
@@ -80,7 +83,7 @@ $app->configure('app');
 */
 $app->routeMiddleware([
     'auth' => App\Http\Middleware\Authenticate::class,
-    'client' => CheckClientCredentials::class,
+    'client' => \Laravel\Passport\Http\Middleware\CheckClientCredentials::class,
     'permission' => Spatie\Permission\Middlewares\PermissionMiddleware::class,
     'role'       => Spatie\Permission\Middlewares\RoleMiddleware::class,
 ]);
@@ -101,6 +104,7 @@ $app->routeMiddleware([
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Laravel\Passport\PassportServiceProvider::class);
 $app->register(Dusterio\LumenPassport\PassportServiceProvider::class);
+$app->register(\App\Providers\UserServiceProvider::class);
 
 
 /*
@@ -120,6 +124,6 @@ $app->router->group([
     require __DIR__ . '/../routes/web.php';
 });
 
-Dusterio\LumenPassport\LumenPassport::routes($app->router, ['prefix' => 'api/v1/oauth'] );
+Dusterio\LumenPassport\LumenPassport::routes($app->router, ['prefix' => 'v1/oauth'] );
 
 return $app;
